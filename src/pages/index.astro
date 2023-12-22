@@ -1,0 +1,52 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import "../styles/index.scss";
+
+import { contentfulClient } from "../lib/contentful";
+import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+
+import type { BlogPost } from "../lib/contentful";
+
+const entries = await contentfulClient.getEntries<BlogPost>({
+	content_type: "blogPost",
+});
+
+const posts = entries.items.map((item) => {
+	const { title, date, description, slug } = item.fields;
+	return {
+		title,
+		slug,
+		description,
+		date: new Date(date).toLocaleDateString(),
+	};
+});
+---
+
+<Layout title="Welcome to Astro.">
+	<main>
+		<h1>
+			Welcome to <span class="text-gradient"
+				>Football Manager Companion App</span
+			>
+		</h1>
+		<p class="instructions">
+			To get started, click on create squad<br />
+		</p>
+		<ul role="list" class="link-card-grid">
+			<Card href="#" title="Create Squad" body="Create a new squad" />
+		</ul>
+
+		<ul role="list" class="link-card-grid">
+			{
+				posts.map((post) => (
+					<Card
+						href={`/posts/${post.slug}/`}
+						title={post.title}
+						body=""
+					/>
+				))
+			}
+		</ul>
+	</main>
+</Layout>
