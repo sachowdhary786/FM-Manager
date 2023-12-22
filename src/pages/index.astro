@@ -4,8 +4,6 @@ import Card from "../components/Card.astro";
 import "../styles/index.scss";
 
 import { contentfulClient } from "../lib/contentful";
-import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
-
 import type { BlogPost } from "../lib/contentful";
 
 const entries = await contentfulClient.getEntries<BlogPost>({
