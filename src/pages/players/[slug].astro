@@ -1,0 +1,30 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import "../../styles/index.scss";
+
+import { contentfulClient } from "../../lib/contentful";
+import type { PlayerType } from "../../lib/contentful";
+
+let player;
+const { slug } = Astro.params;
+try {
+    const data = await contentfulClient.getEntries<PlayerType>({
+        content_type: "playerType",
+        "fields.slug": slug,
+    });
+    const { name, position, dateOfBirth } = data.items[0].fields;
+    player = {
+        name,
+        dateOfBirth: new Date(dateOfBirth).toLocaleDateString(),
+        position,
+    };
+} catch (error) {
+    return Astro.redirect("/404");
+}
+---
+
+<Layout title={player?.name}>
+    <main>
+        <h1>{player?.name}</h1>
+    </main>
+</Layout>

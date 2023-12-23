@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import "../../styles/index.scss";
+
+import { contentfulClient } from "../../lib/contentful";
+import type { SquadType } from "../../lib/contentful";
+
+let squad;
+const { slug } = Astro.params;
+try {
+    const data = await contentfulClient.getEntries<SquadType>({
+        content_type: "squadType",
+        "fields.slug": slug,
+    });
+    const { name } = data.items[0].fields;
+    squad = {
+        name,
+    };
+} catch (error) {
+    return Astro.redirect("/404");
+}
+---
+
+<Layout title={squad?.name}>
+    <main>
+        <h1>{squad?.name}</h1>
+    </main>
+</Layout>

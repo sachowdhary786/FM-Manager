@@ -1,12 +1,19 @@
 import contenful, { type EntryFieldTypes } from "contentful";
 
-export interface BlogPost {
-    contentTypeId: "blogPost",
+export interface PlayerType {
+    contentTypeId: "playerType",
+    fields : {
+        name: EntryFieldTypes.Text,
+        position: EntryFieldTypes.Text,
+        dateOfBirth: EntryFieldTypes.Date,
+        slug: EntryFieldTypes.Text
+    }
+}
+
+export interface SquadType {
+    contentTypeId: "squadType",
     fields: {
-        title: EntryFieldTypes.Text
-        content: EntryFieldTypes.RichText,
-        date: EntryFieldTypes.Date,
-        description: EntryFieldTypes.Text,
+        name: EntryFieldTypes.Text,
         slug: EntryFieldTypes.Text
     }
 }

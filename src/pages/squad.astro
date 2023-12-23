@@ -1,0 +1,35 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import "../styles/index.scss";
+
+import { contentfulClient } from "../lib/contentful";
+import type { SquadType } from "../lib/contentful";
+
+const { slug } = Astro.params;
+
+const entries = await contentfulClient.getEntries<SquadType>({
+  content_type: "squadType",
+});
+
+const squads = entries.items.map((item) => {
+  const { name, slug } = item.fields;
+  return {
+    name,
+    slug,
+  };
+});
+---
+
+<Layout title="Welcome to Astro.">
+  <main>
+    <h1 class="text-gradient">Your Squads</h1>
+    <ul role="list" class="link-card-grid">
+      {
+        squads.map((squad) => (
+          <Card title={squad.name} body="" href={`/${squad.slug}`} />
+        ))
+      }
+    </ul>
+  </main>
+</Layout>
