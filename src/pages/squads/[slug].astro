@@ -3,26 +3,58 @@ import Layout from "../../layouts/Layout.astro";
 import "../../styles/index.scss";
 
 import { contentfulClient } from "../../lib/contentful";
-import type { SquadType } from "../../lib/contentful";
+import type { PlayerType, SquadType } from "../../lib/contentful";
+import Card from "../../components/Card.astro";
 
 let squad;
-const { slug } = Astro.params;
+
 try {
+    const { slug } = Astro.params;
+
+    // Assuming `contentfulClient.getEntries` returns a promise
     const data = await contentfulClient.getEntries<SquadType>({
         content_type: "squadType",
         "fields.slug": slug,
     });
-    const { name } = data.items[0].fields;
-    squad = {
-        name,
-    };
+
+    // Check if there is data and at least one squad entry
+    if (data.items.length > 0) {
+        squad = data.items[0].fields;
+        console.log(squad);
+    } else {
+        // Handle the case where no squad with the specified slug is found
+        return Astro.redirect("/404");
+    }
+
 } catch (error) {
+    console.error('Error fetching Contentful data:', error);
     return Astro.redirect("/404");
 }
+
+// Now `squad` contains the data for the specified slug
 ---
 
 <Layout title={squad?.name}>
     <main>
-        <h1>{squad?.name}</h1>
+        {squad ? (
+            <>
+                <h1>{squad.name}</h1>
+                <ul>
+                    {(squad.players as PlayerType[]).map((player) => (
+                        <li>
+                            <Card 
+                            href="" 
+                            title=`${player.fields.name}` 
+                            body="" 
+                            />
+                            {player.fields.name}
+                        </li>
+                    ))}
+                </ul>
+            </>
+        ) : (
+            <p>Squad not found</p>
+        )}
     </main>
 </Layout>
+

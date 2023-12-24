@@ -1,4 +1,4 @@
-import contenful, { type EntryFieldTypes } from "contentful";
+import contenful, {type EntryFieldTypes} from "contentful";
 
 export interface PlayerType {
     contentTypeId: "playerType",
@@ -14,6 +14,7 @@ export interface SquadType {
     contentTypeId: "squadType",
     fields: {
         name: EntryFieldTypes.Text,
+        players: PlayerType[],
         slug: EntryFieldTypes.Text
     }
 }
