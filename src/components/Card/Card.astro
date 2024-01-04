@@ -1,0 +1,39 @@
+---
+import "./style.scss";
+interface Props {
+	title: string;
+	description: string;
+	href?: string;
+	image?: string;
+	position?: string;
+	power?: any;
+	cost?: any;
+}
+
+const { image, href, title, description, power, cost, position } = Astro.props;
+---
+
+<li class=`link-card`>
+	{
+		href ? (
+			<a href={href}>
+				<h2>{title}</h2>
+				<p>{description}</p>
+			</a>
+		) : (
+			<span>
+				<img src={image} alt={title} />
+				<h2>{title}</h2>
+				<p>{description}</p>
+				<div class="information-panel text-center">
+					<span class="power">power {power}</span>
+					<span class="cost">cost {cost}</span>
+				</div>
+				<div class="">
+					<span class="position">{position}</span>
+				</div>
+
+			</span>
+		)
+	}
+</li>
