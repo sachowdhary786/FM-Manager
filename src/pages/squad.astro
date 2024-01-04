@@ -1,35 +1,84 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
+import Card from "../components/Card/Card.astro";
 import "../styles/index.scss";
 
 import { contentfulClient } from "../lib/contentful";
-import type { SquadType } from "../lib/contentful";
+import type { PlayerType, SquadType } from "../lib/contentful";
+import { sequence } from "astro:middleware";
 
-const { slug } = Astro.params;
+let squad;
 
-const entries = await contentfulClient.getEntries<SquadType>({
-  content_type: "squadType",
-});
+try {
+  const data = await contentfulClient.getEntries<SquadType>({
+    content_type: "squadType",
+  });
 
-const squads = entries.items.map((item) => {
-  const { name, slug } = item.fields;
-  return {
-    name,
-    slug,
+  if (data.items.length > 0) {
+    squad = data.items[0].fields;
+    console.log(squad);
+  } else {
+    return Astro.redirect("/404");
+  }
+} catch (error) {
+  console.error("Error fetching Contenful data:", error);
+  return Astro.redirect("/404");
+}
+
+function sortPlayers(squad: any, sortBy: any) {
+  if (!squad || !squad.players) {
+    return [];
+  }
+
+  // Clone the players array to avoid modifying the original data
+  const sortedPlayers = [...squad.players];
+
+  // Define a compare function based on the sortBy parameter
+  const compareFunction = (a: any, b: any) => {
+    switch (sortBy) {
+      case "firstName":
+        return a.fields.firstName.localeCompare(b.fields.firstName);
+      case "power":
+        return a.fields.power - b.fields.power;
+      case "cost":
+        return a.fields.cost - b.fields.cost;
+      case "position":
+        // Assuming a "position" field is available in player data
+        return a.fields.position.localeCompare(b.fields.position);
+      default:
+        return 0;
+    }
   };
-});
+
+  // Sort the players array using the compare function
+  sortedPlayers.sort(compareFunction);
+
+  return sortedPlayers;
+}
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Your Squad">
   <main>
-    <h1 class="text-gradient">Your Squads</h1>
-    <ul role="list" class="link-card-grid">
-      {
-        squads.map((squad) => (
-          <Card title={squad.name} body="" href={`squads/${squad.slug}`} />
-        ))
-      }
-    </ul>
+    {
+      squad ? (
+        <>
+          <h1 class="text-gradient">Your Squad</h1>
+          <ul role="list" class="link-card-grid">
+            {(squad.players as PlayerType[]).map((player) => (
+              <Card
+                image={`${player.fields.imageLink}`}
+                title={`${player.fields.firstName} ${player.fields.lastName}`}
+                description=""
+                position={`${player.fields.position}`}
+                power={player.fields.power}
+                cost={player.fields.cost}
+              />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>Squad not found</p>
+      )
+    }
   </main>
 </Layout>
