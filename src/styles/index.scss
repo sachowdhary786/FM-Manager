@@ -1,11 +1,10 @@
 main {
-    margin: auto;
-    padding: 1rem;
-    width: 800px;
-    max-width: calc(100% - 2rem);
+    padding: 0 1rem;
+    margin-top: 1rem;
     color: white;
     font-size: 20px;
     line-height: 1.6;
+    width: 100%;
 }
 .astro-a {
     position: absolute;
@@ -17,10 +16,9 @@ main {
     z-index: -1;
 }
 h1 {
-    font-size: 4rem;
+    font-size: 2rem;
     font-weight: 700;
     line-height: 1;
-    text-align: center;
     margin-bottom: 1em;
 }
 .text-gradient {
@@ -51,7 +49,7 @@ h1 {
 }
 .link-card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(20ch, 1fr));
     gap: 2rem;
     padding: 0;
 }

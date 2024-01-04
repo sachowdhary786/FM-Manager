@@ -1,18 +1,16 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
+import Layout from "@layouts/Layout.astro";
+import Card from "@components/Card/Card.astro";
 import "../styles/index.scss";
 ---
 
 <Layout title="Welcome to Astro.">
 	<main>
-		<h1>
-			Welcome to the
-			<span class="text-gradient">Football Manager Companion App</span>
-		</h1>
 		<ul role="list" class="link-card-grid">
-			<!-- <Card href="#" title="Create Squad" body="Create a new squad" /> -->
-			<Card href="/squad" title="My Squad" body="Show my squad" />
+			<Card href="/squad" title="My Squad" description="Show my squad" />
+			<Card href="/" title="Versus Play" description="Coming soon" />
+			<Card href="/" title="Trades" description="Coming soon" />
+			<Card href="/" title="Store" description="Coming soon" />
 		</ul>
 	</main>
 </Layout>
