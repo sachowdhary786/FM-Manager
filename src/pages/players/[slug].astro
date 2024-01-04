@@ -1,6 +1,7 @@
 ---
+import { Debug } from "astro:components";
 import Layout from "../../layouts/Layout.astro";
-import "../../styles/index.scss";
+import "./style.scss";
 
 import { contentfulClient } from "../../lib/contentful";
 import type { PlayerType } from "../../lib/contentful";
@@ -10,22 +11,54 @@ const { slug } = Astro.params;
 try {
     const data = await contentfulClient.getEntries<PlayerType>({
         content_type: "playerType",
-        "fields.slug": slug,
     });
-    const { name, position, dateOfBirth } = data.items[0].fields;
+    const { firstName, lastName, position } = data.items[0].fields;
     player = {
-        name,
-        dateOfBirth: new Date(dateOfBirth).toLocaleDateString(),
+        firstName,
+        lastName,
         position,
     };
+    console.log(player);
 } catch (error) {
     return Astro.redirect("/404");
+}
+function capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 ---
 
 <Layout title={player?.name}>
     <main>
         <h1>{player?.name}</h1>
-    </main>
-</Layout>
+        <p>Position: {player?.position}</p>
+        <p>Date of Birth: {player?.dateOfBirth}</p>
 
+        {
+            player?.attributes && (
+                <section class="container attributes">
+                    {Object.entries(player?.attributes).map(
+                        ([category, attributeValues]) =>
+                            category === "goalkeeping" && (
+                                <div class="w-full rounded-md border-white border-2 mt-4 min-w-[240px]">
+                                    <h2 class="px-4 py-2">
+                                        {capitalizeFirstLetter(category)}
+                                    </h2>
+                                    <div class="px-4 mb-4">
+                                        <ul>
+                                            <Debug attributeValues />
+                                        {Object.entries(attributeValues).map(
+                                            ([value]) => (
+                                                <li>
+                                                </li>
+                                            ),
+                                        )}
+                                    </ul>
+                                    </div>
+                                </div>
+                            )
+                    )}
+                </section>
+            )
+        }
+    </main>
+</Layout>;
