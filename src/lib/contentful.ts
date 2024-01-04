@@ -3,10 +3,20 @@ import contenful, {type EntryFieldTypes} from "contentful";
 export interface PlayerType {
     contentTypeId: "playerType",
     fields : {
-        name: EntryFieldTypes.Text,
+        firstName: EntryFieldTypes.Text,
+        lastName: EntryFieldTypes.Text,
         position: EntryFieldTypes.Text,
-        dateOfBirth: EntryFieldTypes.Date,
-        slug: EntryFieldTypes.Text
+        imageLink: EntryFieldTypes.Text,
+        power: EntryFieldTypes.Integer,
+        cost: EntryFieldTypes.Integer,
+    }
+}
+
+export interface LinkType {
+    contentTypeId: "linkLocation",
+    fields: {
+        linkText: EntryFieldTypes.Text,
+        url: EntryFieldTypes.Text
     }
 }
 

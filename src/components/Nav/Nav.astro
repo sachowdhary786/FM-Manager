@@ -1,0 +1,39 @@
+---
+import { Debug } from 'astro:components';
+import './style.scss';
+
+import { contentfulClient } from "../../lib/contentful";
+import type { LinkType } from '../../lib/contentful';
+
+let links; 
+
+try {
+    const data = await contentfulClient.getEntries<LinkType>({
+        content_type: "linkLocation"
+    });
+    links = data.items[0].fields;
+    console.log(links);
+} catch (error){
+  console.log("Error fetching Contenful data:", error);
+}
+---
+<div class="sideNavBar">
+<nav>
+    <div>
+        <a href="/" class="nav-home">
+            Home Icon
+        </a>
+        {links ? (
+            <>
+            {(links.links as LinkType[]).map((link) => (
+                <a href={`${link.fields.url}`} class="nav-home">
+                    {link.fields.linkText}
+        </a>
+            ))}
+            </>
+        ) : (
+            <p class="text-white">Links are broken</p>
+        )}
+    </div>
+</nav>
+<div>

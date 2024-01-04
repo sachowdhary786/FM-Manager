@@ -1,4 +1,8 @@
 ---
+import Nav from '../components/Nav/Nav.astro'
+
+import '@fontsource/material-icons';
+
 interface Props {
 	title: string;
 }
@@ -17,6 +21,7 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body>
+		<Nav />
 		<slot />
 	</body>
 </html>
@@ -32,20 +37,21 @@ const { title } = Astro.props;
 			white 60%
 		);
 	}
+	a {
+		text-decoration: none;
+		background-color: transparent;
+	}
 	html {
 		font-family: system-ui, sans-serif;
 		background: #13151a;
-		background-size: 224px;
+		-webkit-font-smoothing: antialiased;
 	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
+	body {
+		display: flex;
+		height: 100vh;
 	}
+	.sideNavBar a {
+		/* font-family: 'Material Icons', sans-serif; */
+	}
+
 </style>
