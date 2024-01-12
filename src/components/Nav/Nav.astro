@@ -1,5 +1,4 @@
 ---
-import { Debug } from 'astro:components';
 import './style.scss';
 
 import { contentfulClient } from "../../lib/contentful";
@@ -12,7 +11,6 @@ try {
         content_type: "linkLocation"
     });
     links = data.items[0].fields;
-    console.log(links);
 } catch (error){
   console.log("Error fetching Contenful data:", error);
 }

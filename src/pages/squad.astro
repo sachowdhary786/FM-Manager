@@ -5,7 +5,6 @@ import "../styles/index.scss";
 
 import { contentfulClient } from "../lib/contentful";
 import type { PlayerType, SquadType } from "../lib/contentful";
-import { sequence } from "astro:middleware";
 
 let squad;
 
@@ -16,7 +15,6 @@ try {
 
   if (data.items.length > 0) {
     squad = data.items[0].fields;
-    console.log(squad);
   } else {
     return Astro.redirect("/404");
   }
