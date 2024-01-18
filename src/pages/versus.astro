@@ -1,11 +1,134 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Arena from "../modules/battle_arena/Arena.vue";
-import '../styles/pages/versus.scss';
+import "../styles/pages/versus.scss";
+
+import { persistentAtom } from "@nanostores/persistent";
+
+import { PlayerType, contentfulClient } from "../lib/contentful";
+import type { SquadType } from "../lib/contentful";
+
+let squad;
+let p1Current;
+let p2Current;
+let isP1Win;
+let isP2Win;
+let p1Score;
+let p2Score;
+let p1Cards;
+let p2Cards;
+
+export let $p1Current = persistentAtom<any>("p1Current", []);
+export let $p2Current = persistentAtom<any>("p1Current", []);
+
+try {
+    const data = await contentfulClient.getEntries<SquadType>({
+        content_type: "squadType",
+    });
+
+    if (data.items.length > 0) {
+        squad = data.items[0].fields;
+        if (
+            $p1Current.get().value === undefined &&
+            $p2Current.get().value === undefined
+        ) {
+            $p1Current.set(selectRandomPlayer(squad));
+        }
+        p1Current = $p1Current.get().fields;
+        p2Current = $p2Current.get().fields;
+        // $p1Current.set(selectRandomPlayer(squad));
+    } else {
+        return Astro.redirect("/404");
+    }
+} catch (error) {
+    console.error("Error fetching Contenful data:", error);
+    return Astro.redirect("/404");
+}
+
+function selectRandomPlayer(squad) {
+    const squadValues = Object.values(squad.players);
+
+    if (squadValues.length > 0) {
+        let randomPlayer;
+        const randomIndex = Math.floor(Math.random() * squadValues.length);
+        return (randomPlayer = squadValues[randomIndex]);
+    } else {
+        // Handle the case when squad is an empty object
+        console.warn("The squad object is empty.");
+    }
+}
+
+function capitalFirst(string) {
+    let result = string.charAt(0).toUpperCase() + string.slice(1);
+    return result;
+}
+
+function compareStat(stat) {
+    const p1Stat = p1Current[0][stat];
+    const p2Stat = p2Current[0][stat];
+
+    if (p1Stat > p2Stat) {
+        processRoundOutcome("p1-win");
+    } else if (p2Stat > p1Stat) {
+        processRoundOutcome("p2-win");
+    } else {
+        processRoundOutcome("draw");
+    }
+}
+
+function processRoundOutcome(outcome) {
+    if (isP1Win) {
+        p1Score += 1;
+        p1Cards.push(p2Current.splice(0, 1)[0]);
+        p1Cards.push(p1Current.splice(0, 1)[0]);
+    } else if (isP2Win) {
+        p2Score += 1;
+        p2Cards.push(p1Current.splice(0, 1)[0]);
+        p2Cards.push(p2Current.splice(0, 1)[0]);
+    } else {
+        p1Cards.push(p1Current.splice(0, 1)[0]);
+        p2Cards.push(p2Current.splice(0, 1)[0]);
+    }
+}
 ---
 
 <Layout title="Game Arena">
     <main>
-        <Arena/>
+        <div id="main-container">
+            <div id="score-container">
+                <div>
+                    <h2>Player 1: {p1Score}</h2>
+                </div>
+                <div>
+                    <h2>CPU: {p2Score}</h2>
+                </div>
+            </div>
+
+            <div id="top-trumps-container">
+                <div id="p1-current" class="player-card">
+                    <h2 class="player-header">Players Card</h2>
+                    {p1Current.firstName}
+                    {p1Current.lastName}
+                </div>
+
+                <div id="p2-current" class="player-card">
+                    <h2 class="player-header">CPU Card</h2>
+                    {p2Current.firstName}
+                    {p2Current.lastName}
+                </div>
+            </div>
+
+            <div id="button-container">
+                <div>
+                    <button id="reset-btn">Play Again?</button>
+                </div>
+
+                <div id="stat-btns">
+                    <button></button>
+                </div>
+            </div>
+        </div>
     </main>
 </Layout>
+
+<script define:vars={{$p1Current, $p2Current}}>
+</script>

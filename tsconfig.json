@@ -1,43 +1,24 @@
 {
   "extends": "astro/tsconfigs/base",
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "/Users/saadchowdhary/local/FM-Manager",
     "paths": {
       "@components/*": [
         "src/components/*"
       ],
       "@layouts/*": [
         "src/layouts/*"
-      ],
+      ]
     },
     "plugins": [
       {
         "name": "@astrojs/ts-plugin"
       }
     ],
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
     "jsx": "preserve",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": false,
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "importHelpers": true,
-    "downlevelIteration": true,
-    "types": [
-      "node"
-    ],
-    "lib": [
-      "dom",
-      "esnext"
-    ]
+    "jsxImportSource": "solid-js"
   },
   "include": [
     "src/**/*.ts"
-  ]
+, "src/lib/store.jsx"  ]
 }
