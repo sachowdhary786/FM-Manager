@@ -1,10 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card/Card.astro";
 import "../styles/index.scss";
 
 import { contentfulClient } from "../lib/contentful";
 import type { PlayerType, SquadType } from "../lib/contentful";
+import PlayerCard from "../components/Card/PlayerCard.astro";
 
 let squad;
 
@@ -63,8 +63,8 @@ function sortPlayers(squad: any, sortBy: any) {
           <h1 class="text-gradient">Your Squad</h1>
           <ul role="list" class="link-card-grid">
             {(squad.players as PlayerType[]).map((player) => (
-              <Card
-                image={`${player.fields.imageLink}`}
+              <PlayerCard
+                imageLink={`${player.fields.imageLink}`}
                 title={`${player.fields.firstName} ${player.fields.lastName}`}
                 description=""
                 position={`${player.fields.position}`}

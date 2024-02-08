@@ -1,0 +1,12 @@
+.player {
+    &-stats {
+        display: flex;
+        justify-content: space-between;
+        vertical-align: middle;
+        align-items: center;
+        text-align: center;
+        gap: 2rem;
+        margin: 0 auto;
+        
+    }
+}

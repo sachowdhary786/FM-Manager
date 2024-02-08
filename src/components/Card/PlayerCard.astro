@@ -1,0 +1,18 @@
+---
+import "./styles/style.scss";
+import "./styles/player-card.scss"
+import {PlayerCardInterface} from './card.type';
+
+const { href, title, description, power, cost, imageLink }: PlayerCardInterface = Astro.props;
+---
+
+<li class=`player-card`>
+    <a href={href}>
+        <h2>{title}</h2>
+        <div class="player-stats">
+            <p>Power: {power}</p>
+            <p>Cost: {cost}</p>
+        </div>
+        <img src={imageLink} alt={title} />
+    </a>
+</li>

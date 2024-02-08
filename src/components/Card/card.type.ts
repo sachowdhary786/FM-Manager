@@ -5,7 +5,8 @@ export interface CardInterface {
 }
 
 export interface PlayerCardInterface extends CardInterface {
-    firstName: string;
-    lastName: string;
-    imageLink: string;
+    power?: number;
+    cost?: number;
+    imageLink?: string;
+    position?: string;
 }
