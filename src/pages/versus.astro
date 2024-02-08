@@ -26,16 +26,16 @@ try {
     });
 
     if (data.items.length > 0) {
-        squad = data.items[0].fields;
+        squad = data.items[0].fields.players;
         if (
             $p1Current.get().value === undefined &&
             $p2Current.get().value === undefined
         ) {
             $p1Current.set(selectRandomPlayer(squad));
+            $p2Current.set(selectRandomPlayer(squad));
         }
-        p1Current = $p1Current.get().fields;
-        p2Current = $p2Current.get().fields;
-        // $p1Current.set(selectRandomPlayer(squad));
+        p1Current = $p1Current.get();
+        p2Current = $p2Current.get();
     } else {
         return Astro.redirect("/404");
     }
@@ -45,16 +45,19 @@ try {
 }
 
 function selectRandomPlayer(squad) {
-    const squadValues = Object.values(squad.players);
+    let randomPlayer;
+    let squadValues = squad;
+    const randomIndex = Math.floor(Math.random() * squadValues.length);
 
-    if (squadValues.length > 0) {
-        let randomPlayer;
-        const randomIndex = Math.floor(Math.random() * squadValues.length);
-        return (randomPlayer = squadValues[randomIndex]);
-    } else {
-        // Handle the case when squad is an empty object
-        console.warn("The squad object is empty.");
-    }
+    return (randomPlayer = {
+        firstName: squadValues[randomIndex].fields.firstName,
+        lastName: squadValues[randomIndex].fields.lastName,
+        position: squadValues[randomIndex].fields.position,
+        team: squadValues[randomIndex].fields.team.fields.name,
+        power: squadValues[randomIndex].fields.power,
+        cost: squadValues[randomIndex].fields.cost,
+        imageLink: squadValues[randomIndex].fields.imageLink,
+    });
 }
 
 function capitalFirst(string) {
@@ -108,12 +111,20 @@ function processRoundOutcome(outcome) {
                     <h2 class="player-header">Players Card</h2>
                     {p1Current.firstName}
                     {p1Current.lastName}
+                    <img
+                        src={p1Current.imageLink}
+                        alt={p1Current.firstName + p2Current.lastName}
+                    />
                 </div>
 
                 <div id="p2-current" class="player-card">
                     <h2 class="player-header">CPU Card</h2>
                     {p2Current.firstName}
                     {p2Current.lastName}
+                    <img
+                    src={p2Current.imageLink}
+                    alt={p2Current.firstName + p2Current.lastName}
+                />
                 </div>
             </div>
 
@@ -130,5 +141,4 @@ function processRoundOutcome(outcome) {
     </main>
 </Layout>
 
-<script define:vars={{$p1Current, $p2Current}}>
-</script>
+<script define:vars={{ $p1Current, $p2Current }}></script>
