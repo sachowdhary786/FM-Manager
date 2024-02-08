@@ -1,0 +1,28 @@
+---
+import './style.scss';
+---
+<template>
+    <button class="btn" :type="type" :disabled="disabled" @click="handleClick">
+        <slot></slot>
+    </button>
+</template>
+
+<script>
+    export default {
+        props: {
+            type: {
+                type: String,
+                default: "button"
+            }, 
+            disabled: {
+                type: Boolean, 
+                default: false
+            }
+        }, 
+        methods: {
+            handleClick(){
+                this.$emit('click')
+            }
+        }
+    }
+</script>

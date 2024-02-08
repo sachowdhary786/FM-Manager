@@ -1,0 +1,17 @@
+main {
+    margin: auto;
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    background: #ccc;
+    padding: 10px;
+
+    form {
+        label {
+            display: block;
+        }
+    }
+}
