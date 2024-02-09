@@ -10,7 +10,7 @@ try {
     const data = await contentfulClient.getEntries<LinkType>({
         content_type: "linkLocation"
     });
-    links = data.items[0].fields;
+    links = data.items[1].fields;
 } catch (error){
   console.log("Error fetching Contenful data:", error);
 }

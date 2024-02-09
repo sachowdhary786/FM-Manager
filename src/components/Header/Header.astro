@@ -1,0 +1,36 @@
+---
+import './style.scss';
+
+import { contentfulClient } from "../../lib/contentful";
+import type { LinkType } from '../../lib/contentful';
+
+let links; 
+
+try {
+    const data = await contentfulClient.getEntries<LinkType>({
+        content_type: "linkLocation"
+    });
+    links = data.items[0].fields;
+} catch (error){
+  console.log("Error fetching Contenful data:", error);
+}
+---
+<div class="header">
+    <div class="container">
+        <ul>
+            {links ? (
+                <>
+                {(links.links as LinkType[]).map((link) => (
+                    <a href={`${link.fields.url}`}>
+                    <li>{link.fields.linkText}</li>
+            </a>
+                ))}
+                </>
+            ) : (
+                <p class="text-white">Links are broken</p>
+            )}
+        </ul>
+    </div>
+</div>
+
+<!-- Do the logic for showing / hiding the buttons based on whether the user is logged in -->

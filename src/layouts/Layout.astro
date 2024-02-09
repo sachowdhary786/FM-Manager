@@ -1,5 +1,6 @@
 ---
 import Nav from "../components/Nav/Nav.astro";
+import Header from "../components/Header/Header.astro";
 
 import "../styles/index.scss";
 import "@fontsource/material-icons";
@@ -23,7 +24,10 @@ const { title } = Astro.props;
 	</head>
 	<body>
 		<Nav />
-		<slot />
+		<div class="container">
+		<Header/>
+			<slot />
+		</div>
 	</body>
 </html>
 <style is:global>
