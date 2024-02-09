@@ -1,36 +1,61 @@
 ---
-import './style.scss';
+import "./style.scss";
 
 import { contentfulClient } from "../../lib/contentful";
-import type { LinkType } from '../../lib/contentful';
+import type { LinkType } from "../../lib/contentful";
+import { app } from "../../firebase/server";
+import { getAuth } from "firebase-admin/auth";
 
-let links; 
+let links;
+let signedIn;
 
 try {
-    const data = await contentfulClient.getEntries<LinkType>({
-        content_type: "linkLocation"
-    });
-    links = data.items[0].fields;
-} catch (error){
+  const data = await contentfulClient.getEntries<LinkType>({
+    content_type: "linkLocation",
+  });
+  links = data.items[0].fields;
+} catch (error) {
   console.log("Error fetching Contenful data:", error);
 }
+
+const auth = getAuth(app);
+if (Astro.cookies.has("session")) {
+  const sessionCookie = Astro.cookies.get("session")?.value ?? '';
+  const decodedCookie = await auth.verifySessionCookie(sessionCookie);
+  if (decodedCookie) {
+    signedIn = true;
+  }
+} else {
+  signedIn = false;
+}
 ---
+
 <div class="header">
-    <div class="container">
-        <ul>
-            {links ? (
-                <>
-                {(links.links as LinkType[]).map((link) => (
-                    <a href={`${link.fields.url}`}>
-                    <li>{link.fields.linkText}</li>
-            </a>
-                ))}
-                </>
-            ) : (
-                <p class="text-white">Links are broken</p>
-            )}
-        </ul>
-    </div>
+  <div class="container">
+    <ul id="link-list"></ul>
+  </div>
 </div>
 
-<!-- Do the logic for showing / hiding the buttons based on whether the user is logged in -->
+<script define:vars={{ links, signedIn }}>
+  const currentRoute = window.location.pathname.substring(1);
+  const linkList = document.getElementById("link-list");
+
+  for (const link of links.links) {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = link.fields.url;
+    a.textContent = link.fields.linkText;
+    if (currentRoute === link.fields.url) {
+      li.classList.add("hide");
+    }
+    if (signedIn) {
+      link.fields.url === "signout"
+        ? li.addEventListener("click", logOut)
+        : null;
+    } else if (!signedIn){
+      link.fields.url === "signout" ? li.classList.add("hide") : null;
+    }
+    li.appendChild(a);
+    linkList.appendChild(li);
+  }
+</script>

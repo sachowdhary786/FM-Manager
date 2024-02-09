@@ -2,92 +2,81 @@
 import { app } from "../firebase/server";
 import { getAuth } from "firebase-admin/auth";
 import Layout from "../layouts/Layout.astro";
-import Button from "../components/atoms/button/Button.astro";
+
+import Google_Button from "../components/Google_Button/Google_Button.astro";
 
 import "../styles/pages/signin.scss";
 
 const auth = getAuth(app);
 if (Astro.cookies.has("session")) {
-    const sessionCookie = Astro.cookies.get("session")?.value;
-    const decodedCookie = await auth.verifySessionCookie(sessionCookie);
-    if (decodedCookie) {
-        return Astro.redirect("/dashboard");
-    }
+  const sessionCookie = Astro.cookies.get("session")?.value ?? "";
+  const decodedCookie = await auth.verifySessionCookie(sessionCookie);
+  if (decodedCookie) {
+    return Astro.redirect("/dashboard");
+  }
 }
 ---
 
 <Layout title="Sign in">
-    <main>
-        <div class="modal sign-in">
-            <h1>Sign in</h1>
-            <form action="/api/auth/signin" method="post" id="form-signin">
-                <label for="email" for="Email">Email</label>
-                <input type="email" name="email" id="email" autocomplete="email"/>
-                <label for="password" for="Password">Password</label>
-                <input type="password" name="password" id="password" autocomplete="current-password"/>
-                <button type="submit" class="btn">Sign in</button>
-            </form>
-            <button id="google">Sign in with Google</button>
-            <p>New here? <a href="/register">Create Account</a></p>
-        </div>
-    </main>
+  <main class="m-auto w-1/4">
+    <div class="modal sign-in mb-8 p-12 flex flex-col items-start">
+      <h1>Sign in</h1>
+      <form action="/api/auth/signin" method="post" id="form-signin">
+        <label for="email" for="Email">Email</label>
+        <input type="email" name="email" id="email" autocomplete="email" />
+        <label for="password" for="Password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          autocomplete="current-password"
+        />
+        <button type="submit" class="btn mt-4">Sign in</button>
+      </form>
+      <Google_Button />
+      <p>New here? <a href="/register">Create Account</a></p>
+    </div>
+  </main>
 </Layout>
 
-<script lang="ts">
-    import {
-        getAuth,
-        inMemoryPersistence,
-        signInWithEmailAndPassword,
-        GoogleAuthProvider,
-        signInWithPopup
-    } from "firebase/auth";
-    import { app } from "../firebase/client";
+<script>
+  import {
+    getAuth,
+    inMemoryPersistence,
+    signInWithEmailAndPassword,
+  } from "firebase/auth";
+  import { app } from "../firebase/client";
 
-    const auth = getAuth(app);
+  const auth = getAuth(app);
 
-    // Prevent browser from storing session data
-    auth.setPersistence(inMemoryPersistence);
+  // Prevent browser from storing session data
+  auth.setPersistence(inMemoryPersistence);
 
-    const form = document.querySelector("form") as HTMLFormElement;
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const email = formData.get("email")?.toString();
-        const password = formData.get("password")?.toString();
+  const form = document.querySelector("form");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const email = formData.get("email")?.toString();
+    const password = formData.get("password")?.toString();
 
-        if (!email || !password) {
-            return;
-        }
-        const userCredential = await signInWithEmailAndPassword(
-            auth,
-            email,
-            password,
-        );
-        const idToken = await userCredential.user.getIdToken();
-        const response = await fetch("/api/auth/signin", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${idToken}`,
-            },
-        });
-
-        if (response.redirected) {
-            window.location.assign(response.url);
-        }
+    if (!email || !password) {
+      return;
+    }
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const idToken = await userCredential.user.getIdToken();
+    const response = await fetch("/api/auth/signin", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
     });
 
-    const googleSignin = document.querySelector('#google') as HTMLButtonElement;
-    googleSignin.addEventListener("click", async() => {
-        const provider = new GoogleAuthProvider();
-        const userCredential = await signInWithPopup(auth, provider);
-        const idToken = await userCredential.user.getIdToken();
-        const res = await fetch('api/auth/signin' ,{
-            headers: {
-                Authorization: `Bearer ${idToken}`
-            }
-        });
-        if (res.redirected){
-            window.location.assign(res.url);
-        }
-    })
+    if (response.redirected) {
+      window.location.assign(response.url);
+    }
+  });
 </script>

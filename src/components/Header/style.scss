@@ -32,6 +32,9 @@
                 &:is(:hover, :focus-within) h2 {
                     color: rgb(var(--accent-light));
                 }
+                &.hide {
+                    display: none;
+                }
             }
         }
     }

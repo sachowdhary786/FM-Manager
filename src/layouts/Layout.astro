@@ -30,32 +30,3 @@ const { title } = Astro.props;
 		</div>
 	</body>
 </html>
-<style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	a {
-		text-decoration: none;
-		background-color: transparent;
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: #13151a;
-		-webkit-font-smoothing: antialiased;
-	}
-	body {
-		display: flex;
-		height: 100vh;
-	}
-	.sideNavBar a {
-		/* font-family: 'Material Icons', sans-serif; */
-	}
-</style>

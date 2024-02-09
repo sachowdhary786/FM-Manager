@@ -1,20 +1,17 @@
-main {
-    margin: auto;
-}
-
 .modal {
-    display: flex;
-    flex-direction: column;
-    border-radius: 0.5rem;
-    background: #ccc;
-    padding: 10px;
+  border: 1px solid rgba(var(--accent-light), 25%);
+  background: linear-gradient(
+    rgba(var(--accent-dark), 66%),
+    rgba(var(--accent-dark), 33%)
+  );
+  border-radius: 0.5rem;
 
-    form {
-        label {
-            display: block;
-        }
-        input {
-            color: black;
-        }
+  form {
+    label, input, button {
+      display: block;
     }
+    input {
+      color: black;
+    }
+  }
 }
